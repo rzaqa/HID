@@ -1,21 +1,16 @@
-import sys
-from pathlib import Path
-
 import hash_wrapper as hw
 import pytest
 
-# ---- Import path setup ----
-ROOT_DIR = Path(__file__).resolve().parent.parent
-SRC_DIR = ROOT_DIR / "src"
-sys.path.insert(0, str(SRC_DIR))
 
-
-@pytest.fixture(scope="session", autouse=True)
-def init_hash_library():
-    """
-    Initialize the hash library once before all tests,
-    and terminate it after all tests complete.
-    """
+# I prepared a fixture for future tests. But it's not used anywhere
+@pytest.fixture(scope="function")
+def hash_lib():
     hw.init_library()
     yield
-    hw.terminate_library()
+    try:
+        hw.terminate_library()
+    except RuntimeError as e:
+        if "error code 7" in str(e):
+            print("⚠️ Library already terminated, skipping")
+        else:
+            raise

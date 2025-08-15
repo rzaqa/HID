@@ -1,0 +1,9 @@
+{
+  "positive_cases": [
+        "hid_tests/data/samples/positive/a.txt F36B265220F5E88EDD57963A1109146",
+        "hid_tests/data/samples/positive/b.txt E2BB86331F1DE8CEF43E59D0D1E8FF51"
+      ],
+  "negative_cases": [
+        "hid_tests/data/samples/negative/empty "
+      ]
+}

@@ -1,12 +1,16 @@
 #!/bin/bash
-set -e  # Exit on error
 
-# Build Docker image
 docker build -t hid-tests .
 
-# Run tests in container
-docker run --rm \
-    -v "$(pwd)/hid_tests/test_reports:/app/hid_tests/test_reports" \
-    hid-tests \
-    pytest -v -s \
-        --alluredir=hid_tests/test_reports/allure/allure-results
+docker run --rm -it \
+  -v "$(pwd)/hid_tests/test_reports:/app/hid_tests/test_reports" \
+  -v "$(pwd)/lib:/app/lib" \
+  hid-tests \
+  pytest -v \
+    --timeout=10 \
+    --timeout-method=thread \
+    --capture=sys \
+    --cov=hid_tests/src \
+    --cov-report=term-missing \
+    --cov-report=html:hid_tests/test_reports/coverage \
+    --alluredir=hid_tests/test_reports/allure/allure-results

@@ -1,0 +1,50 @@
+name: Run Python Tests
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: ⬇️ Checkout repository
+        uses: actions/checkout@v4
+
+      - name: 🐍 Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: 📦 Install dependencies
+        run: |
+          python -m venv venv
+          source venv/bin/activate
+          pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: 🧪 Run tests with pytest
+        run: |
+          source venv/bin/activate
+          pytest -v \
+            --cov=hid_tests/src \
+            --cov-report=term-missing \
+            --cov-report=html:hid_tests/test_reports/coverage \
+            --cov-report=xml:hid_tests/test_reports/coverage.xml \
+            --alluredir=hid_tests/test_reports/allure/allure-results
+
+      - name: 📤 Upload coverage report (HTML)
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-html
+          path: hid_tests/test_reports/coverage
+
+      - name: 📤 Upload Allure results (optional)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: allure-results
+          path: hid_tests/test_reports/allure/allure-results

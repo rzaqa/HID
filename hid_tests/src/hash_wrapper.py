@@ -67,7 +67,7 @@ lib.HashTerminate.restype = c_uint32
 lib.HashDirectory.argtypes = [c_char_p, POINTER(c_size_t)]
 lib.HashDirectory.restype = c_uint32
 
-lib.HashReadNextLogLine.argtypes = [POINTER(c_char_p)]
+lib.HashReadNextLogLine.argtypes = [POINTER(c_void_p)]
 lib.HashReadNextLogLine.restype = c_uint32
 
 lib.HashStatus.argtypes = [c_size_t, POINTER(c_bool)]
@@ -83,14 +83,14 @@ lib.HashFree.restype = None
 # ----------------------------
 # Python wrapper functions
 # ----------------------------
-def init_library():
+def init_library() -> None:
     """Initialize the hash library."""
     err = lib.HashInit()
     if err != HASH_ERROR_OK:
         raise RuntimeError(f"HashInit failed, error code {err}")
 
 
-def terminate_library():
+def terminate_library() -> None:
     """Terminate the hash library."""
     err = lib.HashTerminate()
     if err != HASH_ERROR_OK:
@@ -108,14 +108,15 @@ def start_hashing(directory: str) -> int:
 
 def read_log_line() -> str | None:
     """Read the next log line, or None if the log is empty."""
-    line_ptr = c_char_p()
-    err = lib.HashReadNextLogLine(byref(line_ptr))
+    raw_ptr = c_void_p()
+    err = lib.HashReadNextLogLine(byref(raw_ptr))
+    print(f"[DEBUG] read_log_line: err={err}")
     if err == HASH_ERROR_LOG_EMPTY:
         return None
     if err != HASH_ERROR_OK:
         raise RuntimeError(f"HashReadNextLogLine failed, error code {err}")
-    line = ctypes.string_at(line_ptr).decode("utf-8")
-    free_memory(line_ptr)
+    line = ctypes.string_at(raw_ptr).decode("utf-8")
+    free_memory(raw_ptr)
     return line
 
 
@@ -123,19 +124,22 @@ def get_status(op_id: int) -> bool:
     """Check whether the given operation is still running."""
     running_flag = c_bool()
     err = lib.HashStatus(c_size_t(op_id), byref(running_flag))
+    print(
+        f"[DEBUG] get_status({op_id}) returned err={err}, running={running_flag.value}"
+    )
     if err != HASH_ERROR_OK:
         raise RuntimeError(f"HashStatus failed, error code {err}")
     return running_flag.value
 
 
-def stop_operation(op_id: int):
+def stop_operation(op_id: int) -> None:
     """Stop the given hashing operation."""
     err = lib.HashStop(c_size_t(op_id))
     if err != HASH_ERROR_OK:
         raise RuntimeError(f"HashStop failed, error code {err}")
 
 
-def free_memory(ptr):
+def free_memory(ptr: c_void_p) -> None:
     """Free memory allocated by the library."""
     if ptr:
         lib.HashFree(ptr)

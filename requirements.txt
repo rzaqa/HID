@@ -1,15 +1,11 @@
-# Tests
 pytest~=8.4.1
 pytest-xdist
+pytest-cov
+pytest-timeout
 allure-pytest
-
-# Linters
+allure-python-commons
 flake8
 black
 isort
 mypy
 bandit
-
-pytest-cov
-
-allure-python-commons
