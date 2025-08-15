@@ -1,0 +1,15 @@
+# Tests
+pytest~=8.4.1
+pytest-xdist
+allure-pytest
+
+# Linters
+flake8
+black
+isort
+mypy
+bandit
+
+pytest-cov
+
+allure-python-commons

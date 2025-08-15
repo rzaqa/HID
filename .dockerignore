@@ -1,0 +1,23 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.pytest_cache/
+
+# Local envs
+venv/
+.venv/
+down_venv/
+
+# OS
+.DS_Store
+
+# Reports and artifacts
+hid_tests/test_reports/
+
+# Git
+.git/
+.gitignore
+
+
