@@ -1,0 +1,7 @@
+[DEBUG] get_status(1) returned err=0, running=True
+[DEBUG] get_status(1) returned err=0, running=True
+[DEBUG] get_status(1) returned err=0, running=True
+[DEBUG] get_status(1) returned err=0, running=True
+[DEBUG] get_status(1) returned err=0, running=False
+[DEBUG] Hashing completed in 0.15s
+[DEBUG] get_status(1) returned err=0, running=False

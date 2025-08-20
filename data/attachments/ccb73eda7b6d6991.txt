@@ -1,0 +1,10 @@
+[DEBUG] get_status(1) returned err=0, running=True
+[DEBUG] get_status(1) returned err=0, running=True
+[DEBUG] get_status(1) returned err=0, running=True
+[DEBUG] get_status(1) returned err=0, running=False
+[DEBUG] Hashing completed in 0.15s
+[DEBUG] read_log_line: err=0
+[DEBUG] Log line: 1 /tmp/pytest-of-runner/pytest-0/test_start_hashing_success0/file1.txt 57ABCFF482BF87D93617C64415C74E3C
+[DEBUG] read_log_line: err=0
+[DEBUG] Log line: 1 /home/runner/work/HID/HID/hid_tests/data/samples/positive/b.txt E2BB86331F1DE8CEF43E59D0D1E8FF51
+[DEBUG] read_log_line: err=1
