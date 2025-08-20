@@ -1,4 +1,4 @@
-name: Run Python Tests
+name: Run Python Tests and Deploy Allure Report
 
 on:
   push:
@@ -27,6 +27,8 @@ jobs:
           pip install -r requirements.txt
 
       - name: 🧪 Run tests with pytest
+        env:
+          PYTHONPATH: hid_tests/src
         run: |
           source venv/bin/activate
           pytest -v \
@@ -42,9 +44,27 @@ jobs:
           name: coverage-html
           path: hid_tests/test_reports/coverage
 
-      - name: 📤 Upload Allure results (optional)
+      - name: 📤 Upload Allure results (raw)
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: allure-results
           path: hid_tests/test_reports/allure/allure-results
+
+      - name: 🧰 Install Allure CLI
+        run: |
+          sudo apt-get update && sudo apt-get install -y openjdk-11-jre
+          wget https://github.com/allure-framework/allure2/releases/download/2.27.0/allure-2.27.0.tgz
+          tar -xzf allure-2.27.0.tgz
+          sudo mv allure-2.27.0 /opt/allure
+          sudo ln -s /opt/allure/bin/allure /usr/bin/allure
+
+      - name: 🧾 Generate Allure report
+        run: |
+          allure generate hid_tests/test_reports/allure/allure-results -o allure-report --clean
+
+      - name: 🚀 Deploy Allure report to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./allure-report

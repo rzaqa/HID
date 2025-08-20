@@ -22,9 +22,13 @@ coverage.xml
 
 # Allure reports
 hid_tests/test_reports/allure/
+hid_tests/test_reports/
 
 # pytest cache
 .pytest_cache/
+# Ignore Python bytecode
+__pycache__/
+*.py[cod]
 
 # Build artifacts
 dist/
