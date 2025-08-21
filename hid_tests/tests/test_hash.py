@@ -159,13 +159,11 @@ class TestHashFiles:
             op_id = hash_wrapper.start_hashing(str(self.samples_dir))
             _wait_done(op_id, timeout_s=10)
 
-            # Получим одну строку
             raw_ptr = ctypes.c_void_p()
             err = hash_wrapper.lib.HashReadNextLogLine(ctypes.byref(raw_ptr))
             assert err == hash_wrapper.HASH_ERROR_OK
             assert raw_ptr.value is not None
 
-            # Освободим вручную
             hash_wrapper.free_memory(raw_ptr)
         finally:
             hash_wrapper.terminate_library()

@@ -3,9 +3,6 @@ import os
 import platform
 from ctypes import POINTER, byref, c_bool, c_char_p, c_size_t, c_uint32, c_void_p
 
-# ----------------------------
-# Error codes from hash.h
-# ----------------------------
 HASH_ERROR_OK = 0
 HASH_ERROR_GENERAL = 1
 HASH_ERROR_EXCEPTION = 2
@@ -16,18 +13,10 @@ HASH_ERROR_ARGUMENT_NULL = 6
 HASH_ERROR_NOT_INITIALIZED = 7
 HASH_ERROR_ALREADY_INITIALIZED = 8
 
-
-# ----------------------------
-# Determine library path
-# ----------------------------
 def _get_library_path() -> str:
     """
     Determine the correct library path based on OS.
-
-    Assumes the library is stored in:
-    HID/lib/<platform>/
     """
-    # Go up two levels: src/hash_wrapper.py → hid_tests → HID
     base_dir = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
     lib_dir = os.path.join(base_dir, "lib")
 
@@ -49,33 +38,19 @@ def _get_library_path() -> str:
 
 
 LIB_PATH = _get_library_path()
-
-# ----------------------------
-# Load the library
-# ----------------------------
 lib = ctypes.CDLL(LIB_PATH)
-
-# ----------------------------
-# Function signatures
-# ----------------------------
 lib.HashInit.argtypes = []
 lib.HashInit.restype = c_uint32
-
 lib.HashTerminate.argtypes = []
 lib.HashTerminate.restype = c_uint32
-
 lib.HashDirectory.argtypes = [c_char_p, POINTER(c_size_t)]
 lib.HashDirectory.restype = c_uint32
-
 lib.HashReadNextLogLine.argtypes = [POINTER(c_void_p)]
 lib.HashReadNextLogLine.restype = c_uint32
-
 lib.HashStatus.argtypes = [c_size_t, POINTER(c_bool)]
 lib.HashStatus.restype = c_uint32
-
 lib.HashStop.argtypes = [c_size_t]
 lib.HashStop.restype = c_uint32
-
 lib.HashFree.argtypes = [c_void_p]
 lib.HashFree.restype = None
 
