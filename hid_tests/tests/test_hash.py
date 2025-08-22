@@ -29,6 +29,7 @@ class TestHashFiles:
 
         self.invalid_op_id = 999999
 
+    @allure.id("test_hash_001")
     def test_init_library_success(self):
         result = None
         try:
@@ -38,6 +39,7 @@ class TestHashFiles:
             hash_wrapper.terminate_library()
         assert result == "ok"
 
+    @allure.id("test_hash_002")
     def test_terminate_library_success(self):
         hash_wrapper.init_library()
         try:
@@ -45,11 +47,13 @@ class TestHashFiles:
         except RuntimeError:
             pytest.fail("terminate_library() should not fail after init")
 
+    @allure.id("test_hash_003")
     def test_terminate_without_init(self):
         with pytest.raises(RuntimeError) as exc_info:
             hash_wrapper.terminate_library()
         assert "hashterminate failed, error code 7" in str(exc_info.value).lower()
 
+    @allure.id("test_hash_004")
     def test_start_hashing_success(self, tmp_path):
         (tmp_path / "file1.txt").write_text("Hello hash")
         hash_wrapper.init_library()
@@ -61,6 +65,7 @@ class TestHashFiles:
         finally:
             hash_wrapper.terminate_library()
 
+    @allure.id("test_hash_004")
     @pytest.mark.skip(reason="Known bug id_hash_005, it's crashes the whole test run")
     @pytest.mark.xfail(reason="Known bug id_hash_005: HashDirectory crashes when path is invalid")
     def test_start_hashing_invalid_path(self):
@@ -72,6 +77,7 @@ class TestHashFiles:
         finally:
             hash_wrapper.terminate_library()
 
+    @allure.id("test_hash_005")
     @pytest.mark.xfail(reason="Known bug id_hash_001: HashReadNextLogLine returns code 1 instead of code 4")
     def test_read_log_line(self):
         hash_wrapper.init_library()
@@ -93,6 +99,7 @@ class TestHashFiles:
         finally:
             hash_wrapper.terminate_library()
 
+    @allure.id("test_hash_006")
     def test_get_status_during_and_after(self):
         hash_wrapper.init_library()
         try:
@@ -109,6 +116,7 @@ class TestHashFiles:
         finally:
             hash_wrapper.terminate_library()
 
+    @allure.id("test_hash_007")
     @pytest.mark.xfail(reason="Known bug id_hash_002: HashStatus silently ignores invalid op_id")
     def test_get_status_invalid_op_id(self):
         hash_wrapper.init_library()
@@ -119,6 +127,7 @@ class TestHashFiles:
         finally:
             hash_wrapper.terminate_library()
 
+    @allure.id("test_hash_008")
     @pytest.mark.skip(reason="Known bug id_hash_003: HashStop has no effect on active operation")
     @pytest.mark.timeout(10)
     def test_stop_running_operation(self):
@@ -135,6 +144,7 @@ class TestHashFiles:
         finally:
             hash_wrapper.terminate_library()
 
+    @allure.id("test_hash_009")
     def test_stop_invalid_op_id(self):
         """
         # Need to clarify the correctness of behaviour - I use an invalid OP and test pass
@@ -148,6 +158,7 @@ class TestHashFiles:
         finally:
             hash_wrapper.terminate_library()
 
+    @allure.id("test_hash_010")
     def test_stop_after_completion(self):
         """
         What is really expected behavior if we try to stop completed operation?
@@ -163,6 +174,7 @@ class TestHashFiles:
         finally:
             hash_wrapper.terminate_library()
 
+    @allure.id("test_hash_011")
     def test_free_memory_manual(self):
         hash_wrapper.init_library()
         try:
@@ -178,6 +190,7 @@ class TestHashFiles:
         finally:
             hash_wrapper.terminate_library()
 
+    @allure.id("test_hash_012")
     @pytest.mark.xfail(reason="Known bug id_hash_004: Duplicate log lines from read_log_line()")
     def test_hashes_generated_for_all_files(self):
         hash_wrapper.init_library()
@@ -211,15 +224,9 @@ class TestHashFiles:
         finally:
             hash_wrapper.terminate_library()
 
-    import hashlib
-    import re
-    from pathlib import Path
-    import pytest
-
-    import allure
-
     @pytest.mark.xfail(reason="Known bug id_hash_006: Incomplete MD5 hash returned from read_log_line()")
     @pytest.mark.functional
+    @allure.label("test_id", "test_hash_013")
     def test_log_line_structure_and_hash_match(self):
         test_file = Path(__file__).parent.parent / "data" / "samples" / "positive" / "one_file" / "a.txt"
 
