@@ -65,7 +65,7 @@ class TestHashFiles:
         finally:
             hash_wrapper.terminate_library()
 
-    @allure.title("id_004")
+    @allure.title("id_005")
     @pytest.mark.skip(reason="Known bug id_hash_005, it's crashes the whole test run")
     @pytest.mark.xfail(reason="Known bug id_hash_005: HashDirectory crashes when path is invalid")
     def test_start_hashing_invalid_path(self):
@@ -77,7 +77,7 @@ class TestHashFiles:
         finally:
             hash_wrapper.terminate_library()
 
-    @allure.title("id_005")
+    @allure.title("id_006")
     @pytest.mark.xfail(reason="Known bug id_hash_001: HashReadNextLogLine returns code 1 instead of code 4")
     def test_read_log_line(self):
         hash_wrapper.init_library()
@@ -99,7 +99,7 @@ class TestHashFiles:
         finally:
             hash_wrapper.terminate_library()
 
-    @allure.title("id_006")
+    @allure.title("id_007")
     def test_get_status_during_and_after(self):
         hash_wrapper.init_library()
         try:
@@ -116,7 +116,7 @@ class TestHashFiles:
         finally:
             hash_wrapper.terminate_library()
 
-    @allure.title("id_007")
+    @allure.title("id_008")
     @pytest.mark.xfail(reason="Known bug id_hash_002: HashStatus silently ignores invalid op_id")
     def test_get_status_invalid_op_id(self):
         hash_wrapper.init_library()
@@ -127,7 +127,7 @@ class TestHashFiles:
         finally:
             hash_wrapper.terminate_library()
 
-    @allure.title("id_008")
+    @allure.title("id_009")
     @pytest.mark.skip(reason="Known bug id_hash_003: HashStop has no effect on active operation")
     @pytest.mark.timeout(10)
     def test_stop_running_operation(self):
@@ -144,7 +144,7 @@ class TestHashFiles:
         finally:
             hash_wrapper.terminate_library()
 
-    @allure.title("id_009")
+    @allure.title("id_010")
     def test_stop_invalid_op_id(self):
         """
         # Need to clarify the correctness of behaviour - I use an invalid OP and test pass
@@ -158,7 +158,7 @@ class TestHashFiles:
         finally:
             hash_wrapper.terminate_library()
 
-    @allure.title("id_010")
+    @allure.title("id_011")
     def test_stop_after_completion(self):
         """
         What is really expected behavior if we try to stop completed operation?
@@ -174,7 +174,7 @@ class TestHashFiles:
         finally:
             hash_wrapper.terminate_library()
 
-    @allure.title("id_011")
+    @allure.title("id_012")
     def test_free_memory_manual(self):
         hash_wrapper.init_library()
         try:
@@ -190,9 +190,8 @@ class TestHashFiles:
         finally:
             hash_wrapper.terminate_library()
 
-    @allure.id("test_hash_012")
     @pytest.mark.xfail(reason="Known bug id_hash_004: Duplicate log lines from read_log_line()")
-    @allure.title("id_012")
+    @allure.title("id_013")
     def test_hashes_generated_for_all_files(self):
         hash_wrapper.init_library()
         try:
@@ -227,7 +226,7 @@ class TestHashFiles:
 
     @pytest.mark.xfail(reason="Known bug id_hash_006: Incomplete MD5 hash returned from read_log_line()")
     @pytest.mark.functional
-    @allure.title("id_013: Validate log line format and MD5 hash for single file")
+    @allure.title("id_014: Validate log line format and MD5 hash for single file")
     def test_log_line_structure_and_hash_match(self):
         test_file = Path(__file__).parent.parent / "data" / "samples" / "positive" / "one_file" / "a.txt"
 
