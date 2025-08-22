@@ -6,6 +6,9 @@ from typing import Dict
 import pytest
 import hash_wrapper
 import ctypes
+import re
+import hashlib
+import allure
 
 from hid_tests.src.utils import _wait_done
 
@@ -14,9 +17,16 @@ from hid_tests.src.utils import _wait_done
 class TestHashFiles:
 
     def setup_method(self):
-        self.samples_dir = Path(__file__).parent.parent / "data" / "samples" / "positive"
+        base_dir = Path(__file__).parent.parent / "data" / "samples" / "positive"
+
+        self.samples_dir = base_dir / "two_files"
         if not self.samples_dir.exists():
             raise FileNotFoundError(f"Test data directory not found: {self.samples_dir}")
+
+        self.one_file = base_dir / "one_file" / "a.txt"
+        if not self.one_file.exists():
+            raise FileNotFoundError(f"Test file not found: {self.one_file}")
+
         self.invalid_op_id = 999999
 
     def test_init_library_success(self):
@@ -200,3 +210,54 @@ class TestHashFiles:
 
         finally:
             hash_wrapper.terminate_library()
+
+    import hashlib
+    import re
+    from pathlib import Path
+    import pytest
+
+    import allure
+
+    @pytest.mark.xfail(reason="Known bug id_hash_006: Incomplete MD5 hash returned from read_log_line()")
+    @pytest.mark.functional
+    def test_log_line_structure_and_hash_match(self):
+        test_file = Path(__file__).parent.parent / "data" / "samples" / "positive" / "one_file" / "a.txt"
+
+        with allure.step("Calculate expected MD5 hash from file content"):
+            expected_hash = hashlib.md5(test_file.read_bytes()).hexdigest().upper()
+            print(f"expected_hash: {expected_hash}")
+
+        with allure.step("Initialize hashing library"):
+            hash_wrapper.init_library()
+
+        try:
+            with allure.step("Start hashing operation on the folder containing the file"):
+                op_id = hash_wrapper.start_hashing(str(test_file.parent))
+
+            with allure.step("Wait until hashing operation completes"):
+                assert _wait_done(op_id), "Hashing did not complete"
+
+            with allure.step("Read one log line from result"):
+                line = hash_wrapper.read_log_line()
+                assert line is not None, "No log line returned"
+
+            with allure.step("Parse and validate log line format"):
+                parts = line.strip().split()
+                assert len(parts) == 3, f"Unexpected log line format: {line}"
+
+            logged_op_id, file_path, hash_val = parts
+
+            with allure.step("Validate parsed values"):
+                print(f"[DEBUG] expected_hash: {expected_hash} (len={len(expected_hash)})")
+                print(f"[DEBUG] actual_hash:   {hash_val} (len={len(hash_val)})")
+
+                assert logged_op_id.isdigit(), "Logged op_id must be numeric"
+                assert Path(file_path).resolve() == test_file.resolve(), "File path in log does not match expected"
+                assert re.fullmatch(r"[A-F0-9]{32}", hash_val), f"Invalid MD5 hash format: {hash_val}"
+                assert hash_val == expected_hash, f"Hash mismatch: expected {expected_hash}, got {hash_val}"
+
+        finally:
+            with allure.step("Terminate hashing library"):
+                hash_wrapper.terminate_library()
+
+
