@@ -1,0 +1,9 @@
+expected_hash: F36B2652200F5E88EDD57963A1109146
+[DEBUG] get_status(1) returned err=0, running=True
+[DEBUG] get_status(1) returned err=0, running=True
+[DEBUG] get_status(1) returned err=0, running=True
+[DEBUG] get_status(1) returned err=0, running=False
+[DEBUG] Hashing completed in 0.15s
+[DEBUG] read_log_line: err=0
+[DEBUG] expected_hash: F36B2652200F5E88EDD57963A1109146 (len=32)
+[DEBUG] actual_hash:   F36B265220F5E88EDD57963A1109146 (len=31)
